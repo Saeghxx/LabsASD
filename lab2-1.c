@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-int main() {
+int main() 
+{
     int n;
     int OpCount = 0;
     double res = 0.0;
