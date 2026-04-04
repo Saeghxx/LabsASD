@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Laboratory Work №6</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2>Laboratory Work №6</h2>
+    <p class="info" id="info"></p>
+
+    <h3>Weighted undirected graph</h3>
+    <canvas id="graphCanvas" width="700" height="490"></canvas>
+
+    <h3>Adjacency matrix</h3>
+    <div class="mat-block">
+      <table id="tUndir"></table>
+    </div>
+
+    <h3>Weight matrix</h3>
+    <div class="mat-block">
+      <table id="tWeights"></table>
+    </div>
+
+    <h3>Prim’s algorithm — step-by-step traversal</h3>
+
+    <div class="controls">
+      <button id="btnStep" onclick="pNextStep()">Next step</button>
+      <button onclick="resetPrima()">Reset</button>
+      <span class="legend">
+        <span class="dot green"></span> in MST
+        <span class="dot yellow"></span> candidate
+        <span class="dot white"></span> not visited
+        <span
+          style="
+            display: inline-block;
+            width: 30px;
+            height: 3px;
+            background: #000000;
+            vertical-align: middle;
+          "
+        ></span>
+        MST edge
+      </span>
+    </div>
+
+    <div class="protocol" id="protocol">
+      Click "Next step" to start Prim’s algorithm
+    </div>
+
+    <div id="pResults" style="display: none">
+      <h4>Result — minimum spanning tree</h4>
+      <div class="results" id="pVector"></div>
+      <h4>MST adjacency matrix</h4>
+      <div class="mat-block"><table id="tSpanTree"></table></div>
+    </div>
+
+    <script src="graphs.js"></script>
+  </body>
+</html>
