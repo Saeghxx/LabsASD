@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lab 3 - Graph Representation</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #ffffff;
+    }
+
+    h1 {
+        margin-bottom: 10px;
+    }
+
+    canvas {
+        border: 2px solid black;
+        display: block;
+        margin-top: 20px;
+        background: white;
+    }
+
+    pre {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 6px;
+        overflow-x: auto;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+</style>
+</head>
+<body>
+
+<p><strong>Vertices (n):</strong> 10</p>
+<p><strong>Seed:</strong> 5400</p>
+<p><strong>k:</strong> 0.75</p>
+
+<button onclick="switchGraph()">Toggle graph</button>
+
+<canvas id="graphCanvas" width="900" height="650"></canvas>
+
+<h2>Directed Graph Matrix</h2>
+<pre id="dirMatrix"></pre>
+
+<h2>Undirected Graph Matrix</h2>
+<pre id="undirMatrix"></pre>
+
+<script>
+
+const PI = Math.PI;
+const SEED = 5400;
+const K = 0.75;
+const N = 10;
+
+let seed = SEED;
+
+let A_dir = [];
+let A_undir = [];
+
+let showDirected = true;
+
+function random() {
+    seed = (seed * 9301 + 49297) % 233280;
+    return (seed / 233280) * 2.0;
+}
+
+function createMatrix(n) {
+    let matrix = [];
+
+    for (let i = 0; i < n; i++) {
+        matrix[i] = [];
+
+        for (let j = 0; j < n; j++) {
+            matrix[i][j] = 0;
+        }
+    }
+
+    return matrix;
+}
+
+function calculateEdge(value, k) {
+    let result = value * k;
+
+    if (result >= 1.0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+function generateDirectedMatrix(matrix, n, k) {
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            let T = random();
+            matrix[i][j] = calculateEdge(T, k);
+        }
+    }
+}
+
+function generateUndirectedMatrix(A_dir, A_undir, n) {
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            if (A_dir[i][j] === 1) {
+                A_undir[i][j] = 1;
+                A_undir[j][i] = 1;
+            }
+        }
+    }
+}
+
+function formatMatrix(matrix) {
+    let result = "";
+
+    for (let i = 0; i < N; i++) {
+        result += matrix[i].join(" ") + "\n";
+    }
+
+    return result;
+}
+
+function drawGraph() {
+    const canvas = document.getElementById("graphCanvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let cx = canvas.width / 2;
+    let cy = canvas.height / 2;
+
+    let R = 220;
+    let rNode = 22;
+
+    let currentMatrix = showDirected ? A_dir : A_undir;
+
+    let nodes = [];
+
+    for (let i = 0; i < N; i++) {
+        let angle = 2 * PI * i / N;
+
+        let x = cx + R * Math.cos(angle);
+        let y = cy + R * Math.sin(angle);
+
+        nodes.push({ x, y });
+    }
+
+    ctx.strokeStyle = "#666";
+    ctx.lineWidth = 1.5;
+
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+
+            if (currentMatrix[i][j] === 1) {
+
+                ctx.beginPath();
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(nodes[j].x, nodes[j].y);
+                ctx.stroke();
+
+                if (showDirected && i !== j) {
+
+                    let dx = nodes[j].x - nodes[i].x;
+                    let dy = nodes[j].y - nodes[i].y;
+
+                    let angle = Math.atan2(dy, dx);
+
+                    let targetX = nodes[j].x - (rNode + 2) * Math.cos(angle);
+                    let targetY = nodes[j].y - (rNode + 2) * Math.sin(angle);
+
+                    let arrowLen = 12;
+                    let arrowAngle = PI / 6;
+
+                    ctx.beginPath();
+                    ctx.moveTo(targetX, targetY);
+
+                    ctx.lineTo(
+                        targetX - arrowLen * Math.cos(angle - arrowAngle),
+                        targetY - arrowLen * Math.sin(angle - arrowAngle)
+                    );
+
+                    ctx.lineTo(
+                        targetX - arrowLen * Math.cos(angle + arrowAngle),
+                        targetY - arrowLen * Math.sin(angle + arrowAngle)
+                    );
+
+                    ctx.closePath();
+                    ctx.fillStyle = "#888";
+                    ctx.fill();
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < N; i++) {
+
+        ctx.beginPath();
+        ctx.arc(
+            nodes[i].x,
+            nodes[i].y,
+            rNode,
+            0,
+            2 * PI
+        );
+
+        ctx.fillStyle = "#eef3ff";
+        ctx.fill();
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#0033aa";
+        ctx.stroke();
+
+        ctx.fillStyle = "black";
+        ctx.font = "bold 15px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+            i,
+            nodes[i].x,
+            nodes[i].y
+        );
+    }
+
+    ctx.fillStyle = "black";
+    ctx.font = "16px Arial";
+    ctx.textAlign = "left";
+
+    let title = showDirected
+        ? "Directed Graph"
+        : "Undirected Graph";
+
+    ctx.fillText(title, 20, 30);
+}
+
+function switchGraph() {
+    showDirected = !showDirected;
+    drawGraph();
+}
+
+A_dir = createMatrix(N);
+A_undir = createMatrix(N);
+
+generateDirectedMatrix(A_dir, N, K);
+generateUndirectedMatrix(A_dir, A_undir, N);
+
+document.getElementById("dirMatrix").textContent =
+    formatMatrix(A_dir);
+
+document.getElementById("undirMatrix").textContent =
+    formatMatrix(A_undir);
+
+console.log("Directed Graph Matrix:");
+console.table(A_dir);
+
+console.log("Undirected Graph Matrix:");
+console.table(A_undir);
+
+drawGraph();
+
+</script>
+
+</body>
+</html>
