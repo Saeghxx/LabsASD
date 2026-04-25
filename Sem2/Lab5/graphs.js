@@ -1,7 +1,4 @@
-const n1 = 5,
-  n2 = 4,
-  n3 = 0,
-  n4 = 0;
+const n1 = 5, n2 = 4, n3 = 2, n4 = 5;
 const seed = n1 * 1000 + n2 * 100 + n3 * 10 + n4;
 const n = 10 + n3;
 const k = 1.0 - n3 * 0.01 - n4 * 0.005 - 0.15;
@@ -9,7 +6,6 @@ const k = 1.0 - n3 * 0.01 - n4 * 0.005 - 0.15;
 document.getElementById("info").textContent =
   `Variant: ${seed}, n = ${n}, k = ${k.toFixed(4)}, placement: triangle`;
 
-// Pseudo-random number generator
 function makeRng(seed) {
   let current = seed;
   return () => {
@@ -19,7 +15,6 @@ function makeRng(seed) {
 }
 const rng = makeRng(seed);
 
-// Adjacency matrix of directed graph
 const dirMatrix = [];
 for (let i = 0; i < n; i++) {
   dirMatrix[i] = [];
@@ -35,7 +30,6 @@ const triR = 200;
 const NODE_R = 16;
 const points = [];
 
-// Finding triangle corners
 const triAngles = [
   -Math.PI / 2,
   -Math.PI / 2 + (2 * Math.PI) / 3,
@@ -46,7 +40,6 @@ const corners = triAngles.map((a) => ({
   y: cy + triR * Math.sin(a),
 }));
 
-// Distribution of vertices by sides
 const perSide = Math.floor(n / 3);
 const extra = n % 3;
 const sideCounts = [
@@ -87,7 +80,6 @@ function findEdgeT(x1, y1, cpx, cpy, x2, y2, ox, oy, r, fromEnd) {
   return fromEnd ? 0 : 1;
 }
 
-// Calculate control point for arc bend
 function getControlPoint(x1, y1, x2, y2, side) {
   const mx = (x1 + x2) / 2,
     my = (y1 + y2) / 2;
@@ -98,7 +90,6 @@ function getControlPoint(x1, y1, x2, y2, side) {
   };
 }
 
-// Draw arrow from vertex i to vertex j
 function drawArrow(ctx, x1, y1, x2, y2, side, color) {
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
@@ -113,13 +104,11 @@ function drawArrow(ctx, x1, y1, x2, y2, side, color) {
   const pb = bezierPoint(tEnd - 0.01, x1, y1, cpx, cpy, x2, y2);
   const angle = Math.atan2(pe.y - pb.y, pe.x - pb.x);
 
-  // Draw arc
   ctx.beginPath();
   ctx.moveTo(ps.x, ps.y);
   ctx.quadraticCurveTo(cpx, cpy, pe.x, pe.y);
   ctx.stroke();
 
-  // Draw arrow
   const size = 11;
   ctx.beginPath();
   ctx.moveTo(pe.x, pe.y);
@@ -135,7 +124,6 @@ function drawArrow(ctx, x1, y1, x2, y2, side, color) {
   ctx.fill();
 }
 
-// Draw line without arrow
 function drawLine(ctx, x1, y1, x2, y2) {
   const { cpx, cpy } = getControlPoint(x1, y1, x2, y2, +1);
 
@@ -151,7 +139,6 @@ function drawLine(ctx, x1, y1, x2, y2) {
   ctx.stroke();
 }
 
-// Draw loop
 function drawLoop(ctx, x, y, color) {
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
@@ -163,7 +150,6 @@ function drawLoop(ctx, x, y, color) {
   ctx.arc(ox, oy, loopR, 0, 2 * Math.PI);
   ctx.stroke();
 
-  // Draw arrow on loop
   const a = 0.1 * Math.PI;
   const tx = ox + loopR * Math.cos(a),
     ty = oy + loopR * Math.sin(a);
@@ -182,7 +168,6 @@ function drawLoop(ctx, x, y, color) {
   ctx.fill();
 }
 
-// Draw edges
 function drawEdges(ctx, matrix, color) {
   ctx.lineWidth = 1.5;
   for (let i = 0; i < n; i++) {
@@ -200,7 +185,6 @@ function drawEdges(ctx, matrix, color) {
   }
 }
 
-// Draw vertices
 function drawNodes(ctx, nodeColors) {
   ctx.font = "bold 12px Arial";
   ctx.textAlign = "center";
@@ -217,12 +201,11 @@ function drawNodes(ctx, nodeColors) {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.fillStyle = color === "white" || color === "#ffe066" ? "#000" : "#fff";
+    ctx.fillStyle = color === "white" || color === "#1851fd" ? "#000" : "#fff";
     ctx.fillText(i + 1, x, y);
   }
 }
 
-// Output matrix to table
 function renderMatrix(matrix, tableEl) {
   for (let i = 0; i < n; i++) {
     const row = tableEl.insertRow();
@@ -234,14 +217,12 @@ function renderMatrix(matrix, tableEl) {
   }
 }
 
-// Draw initial state of graph
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
 
 let nodeColorsB = new Array(n).fill("white");
 let nodeColorsD = new Array(n).fill("white");
 
-// Matrices for storing traversal trees
 const bTree = [];
 const dTree = [];
 for (let i = 0; i < n; i++) {
@@ -275,14 +256,12 @@ function findStart(visited) {
   return -1;
 }
 
-// BFS state
 let bVisited = new Array(n).fill(false);
 let bQueue = [];
 let bOrder = [];
 let bLog = [];
 let bDone = false;
 
-// Initialize BFS
 function initBFS() {
   bVisited = new Array(n).fill(false);
   bQueue = [];
@@ -290,7 +269,6 @@ function initBFS() {
   bLog = [];
   bDone = false;
 
-  // Find starting vertex
   const start = findStart(bVisited);
   if (start === -1) {
     document.getElementById("bProtocol").textContent =
@@ -299,10 +277,9 @@ function initBFS() {
     return;
   }
 
-  // Add starting vertex to queue
   bQueue.push(start);
   bVisited[start] = true;
-  nodeColorsB[start] = "#ffe066";
+  nodeColorsB[start] = "#1851fd";
 
   bLog.push(`BFS start. Starting vertex: ${start + 1}`);
   bLog.push(`Queue: [${bQueue.map((v) => v + 1).join(", ")}]`);
@@ -311,7 +288,6 @@ function initBFS() {
   document.getElementById("bProtocol").textContent = bLog.join("\n");
 }
 
-// One BFS step
 function bNextStep() {
   if (bDone) return;
   activeMode = "bfs";
@@ -331,7 +307,7 @@ function bNextStep() {
     }
     bQueue.push(next);
     bVisited[next] = true;
-    nodeColorsB[next] = "#ffe066";
+    nodeColorsB[next] = "#1851fd";
     bLog.push(
       `\nUnvisited vertices remain. Continue from vertex ${next + 1}`,
     );
@@ -341,14 +317,12 @@ function bNextStep() {
     return;
   }
 
-  // Extract vertex from queue
   const current = bQueue.shift();
   bOrder.push(current);
-  nodeColorsB[current] = "#27ae60";
+  nodeColorsB[current] = "#0cd7ff";
 
   bLog.push(`\nStep ${bOrder.length}: processing vertex ${current + 1}`);
 
-  // Traverse neighbors in numerical order
   const added = [];
   for (let j = 0; j < n; j++) {
     if (dirMatrix[current][j] !== 1) continue;
@@ -357,7 +331,7 @@ function bNextStep() {
     if (!bVisited[j]) {
       bVisited[j] = true;
       bQueue.push(j);
-      nodeColorsB[j] = "#ffe066";
+      nodeColorsB[j] = "#1851fd";
       added.push(j + 1);
 
       bTree[current][j] = 1;
@@ -375,7 +349,6 @@ function bNextStep() {
   document.getElementById("bProtocol").textContent = bLog.join("\n");
 }
 
-// Reset BFS
 function resetBFS() {
   for (let i = 0; i < n; i++) {
     nodeColorsB[i] = "white";
@@ -389,7 +362,6 @@ function resetBFS() {
   initBFS();
 }
 
-// Show BFS results
 function showBResults() {
   document.getElementById("bResults").style.display = "block";
 
@@ -409,7 +381,6 @@ function showBResults() {
   renderMatrix(bTree, document.getElementById("tBTree"));
 }
 
-// DFS state
 let dVisited = new Array(n).fill(false);
 let dStack = [];
 let dParent = new Array(n).fill(-1);
@@ -418,7 +389,6 @@ let dLog = [];
 let dDone = false;
 let dStep = 0;
 
-// Initialize DFS
 function initDFS() {
   dVisited = new Array(n).fill(false);
   dStack = [];
@@ -437,7 +407,7 @@ function initDFS() {
 
   dStack.push(start);
   dVisited[start] = true;
-  nodeColorsD[start] = "#ffe066";
+  nodeColorsD[start] = "#1851fd";
 
   dLog.push(`DFS start. Starting vertex: ${start + 1}`);
   dLog.push(`Stack: [${dStack.map((v) => v + 1).join(", ")}]`);
@@ -447,7 +417,6 @@ function initDFS() {
   document.getElementById("dProtocol").textContent = dLog.join("\n");
 }
 
-// Find next starting vertex
 function dNextStep() {
   if (dDone) return;
   activeMode = "dfs";
@@ -467,7 +436,7 @@ function dNextStep() {
     }
     dStack.push(next);
     dVisited[next] = true;
-    nodeColorsD[next] = "#ffe066";
+    nodeColorsD[next] = "#1851fd";
     dLog.push(`\nContinue from vertex ${next + 1}`);
     dLog.push(`Stack: [${dStack.map((v) => v + 1).join(", ")}]`);
     redraw();
@@ -477,7 +446,6 @@ function dNextStep() {
 
   const current = dStack[dStack.length - 1];
 
-  // Find first unvisited neighbor
   let found = -1;
   for (let j = 0; j < n; j++) {
     if (dirMatrix[current][j] === 1 && j !== current && !dVisited[j]) {
@@ -490,7 +458,7 @@ function dNextStep() {
     dVisited[found] = true;
     dParent[found] = current;
     dStack.push(found);
-    nodeColorsD[found] = "#ffe066";
+    nodeColorsD[found] = "#1851fd";
     dTree[current][found] = 1;
 
     dStep++;
@@ -501,7 +469,7 @@ function dNextStep() {
   } else {
     dStack.pop();
     dOrder.push(current);
-    nodeColorsD[current] = "#27ae60";
+    nodeColorsD[current] = "#0cd7ff";
 
     dStep++;
     dLog.push(`\nStep ${dStep}: return from vertex ${current + 1}`);
@@ -512,7 +480,6 @@ function dNextStep() {
   document.getElementById("dProtocol").textContent = dLog.join("\n");
 }
 
-// Reset DFS
 function resetDFS() {
   nodeColorsD = new Array(n).fill("white");
   for (let i = 0; i < n; i++) dTree[i] = new Array(n).fill(0);
@@ -525,7 +492,6 @@ function resetDFS() {
   initDFS();
 }
 
-// Show DFS results
 function showDFSResults() {
   document.getElementById("dResults").style.display = "block";
 
@@ -545,4 +511,4 @@ function showDFSResults() {
 }
 
 initBFS();
-initDFS();
+initDFS(); 
