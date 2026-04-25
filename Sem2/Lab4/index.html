@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Laboratory Work №4</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2>Laboratory Work №4</h2>
+    <p class="info" id="info"></p>
+
+    <h3>Graphs (k<sub>1</sub>)</h3>
+    <div class="graphs">
+      <div class="graph-block">
+        <h4>Directed graph (k<sub>1</sub>)</h4>
+        <canvas id="dirCanvas1" width="700" height="490"></canvas>
+      </div>
+      <div class="graph-block">
+        <h4>Undirected graph (k<sub>1</sub>)</h4>
+        <canvas id="undirCanvas1" width="700" height="490"></canvas>
+      </div>
+    </div>
+
+    <div class="matrices">
+      <div class="mat-block">
+        <h4>Adjacency matrix (directed) (k<sub>1</sub>)</h4>
+        <table id="tDir1"></table>
+      </div>
+      <div class="mat-block">
+        <h4>Adjacency matrix (undirected) (k<sub>1</sub>)</h4>
+        <table id="tUndir1"></table>
+      </div>
+    </div>
+
+    <div class="results" id="results1"></div>
+
+    <h3>New directed graph and reachability matrix (k<sub>2</sub>)</h3>
+
+    <div class="graph-block">
+      <h4>Directed graph (k<sub>2</sub>)</h4>
+      <canvas id="dirCanvas2" width="700" height="490"></canvas>
+    </div>
+
+    <div class="matrices">
+      <div class="mat-block">
+        <h4>Adjacency matrix (directed) (k<sub>2</sub>)</h4>
+        <table id="tDir2"></table>
+      </div>
+
+      <div class="mat-block">
+        <h4>Reachability matrix</h4>
+        <table id="tReach"></table>
+      </div>
+
+      <div class="mat-block">
+        <h4>Strong connectivity matrix</h4>
+        <table id="tStrong"></table>
+      </div>
+    </div>
+
+    <div class="results" id="results2"></div>
+
+    <div class="graph-block">
+      <h4>Condensation graph</h4>
+      <canvas id="condCanvas" width="700" height="490"></canvas>
+    </div>
+
+    <script src="graphs.js"></script>
+  </body>
+</html>
