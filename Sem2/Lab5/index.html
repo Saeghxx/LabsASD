@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Laboratory Work №5</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h2>Laboratory Work №5</h2>
+    <p class="info" id="info"></p>
+
+    <h3>Directed Graph</h3>
+    <canvas id="graphCanvas" width="700" height="490"></canvas>
+
+    <h3>Adjacency Matrix</h3>
+    <div class="mat-block">
+      <table id="tDir"></table>
+    </div>
+
+    <h3>Breadth-First Search (BFS)</h3>
+    <div class="controls">
+      <button id="btnBStep" onclick="bNextStep()">Next Step</button>
+      <button onclick="resetBFS()">Reset</button>
+      <span class="legend">
+        <span class="dot white"></span> not visited
+        <span class="dot yellow"></span> in queue
+        <span class="dot green"></span> processed
+      </span>
+    </div>
+    <div class="protocol" id="bProtocol">
+      Click "Next Step" to start BFS
+    </div>
+
+    <div id="bResults" style="display: none">
+      <h4>BFS Correspondence Vector</h4>
+      <div class="results" id="bVector"></div>
+      <h4>BFS Tree Adjacency Matrix</h4>
+      <div class="mat-block"><table id="tBTree"></table></div>
+    </div>
+
+    <h3>Depth-First Search (DFS)</h3>
+    <div class="controls">
+      <button id="btnDStep" onclick="dNextStep()">Next Step</button>
+      <button onclick="resetDFS()">Reset</button>
+      <span class="legend">
+        <span class="dot white"></span> not visited
+        <span class="dot yellow"></span> in stack
+        <span class="dot green"></span> processed
+      </span>
+    </div>
+    <div class="protocol" id="dProtocol">
+      Click "Next Step" to start DFS
+    </div>
+
+    <div id="dResults" style="display: none">
+      <h4>DFS Correspondence Vector</h4>
+      <div class="results" id="dVector"></div>
+      <h4>DFS Tree Adjacency Matrix</h4>
+      <div class="mat-block"><table id="tDTree"></table></div>
+    </div>
+
+    <script src="graphs.js"></script>
+  </body>
+</html>
